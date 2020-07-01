@@ -11,6 +11,7 @@ namespace TALMS.Application.Locations.Commands.Update
     {
         public int LocationId { get; set; }
         public string LocationName { get; set; }
+        public bool ActiveFlag { get; set; }
         public string ModifiedBy { get; set; }
     }
     public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationCommand>
@@ -30,6 +31,7 @@ namespace TALMS.Application.Locations.Commands.Update
                 throw new NotFoundException(nameof(Location), request.LocationId);
             
             entity.LocationName = request.LocationName;
+            entity.ActiveFlag = request.ActiveFlag;
             entity.ModifiedBy = request.ModifiedBy;
             entity.ModifiedOn = _dateTime.Now;
             await _context.SaveChangesAsync(cancellationToken);

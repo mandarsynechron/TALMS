@@ -11,6 +11,7 @@ namespace TALMS.Application.Question.Commands.Update
     {
         public int QuestionsId { get; set; }
         public string QuestionsName { get; set; }
+        public bool ActiveFlag { get; set; }
         public string ModifiedBy { get; set; }
     }
     public class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand>
@@ -31,6 +32,7 @@ namespace TALMS.Application.Question.Commands.Update
             if(entity == null)
                 throw new NotFoundException(nameof(Questions), request.QuestionsId);
             entity.QuestionsName = request.QuestionsName;
+            entity.ActiveFlag = request.ActiveFlag;
             entity.ModifiedBy = request.ModifiedBy;
             entity.ModifiedOn = _dateTimeService.Now;
             await _context.SaveChangesAsync(cancellationToken);

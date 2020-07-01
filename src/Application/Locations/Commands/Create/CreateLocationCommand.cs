@@ -9,6 +9,7 @@ namespace TALMS.Application.Locations.Commands.Create
     public class CreateLocationCommand : IRequest<int>
     {
         public string LocationName { get; set; }
+        public bool ActiveFlag { get; set; }
         public string CreatedBy { get; set; }
     }
     public class CreateLocationCommandHandler : IRequestHandler<CreateLocationCommand, int>
@@ -26,6 +27,7 @@ namespace TALMS.Application.Locations.Commands.Create
             var entity = new Location
             {
                 LocationName = request.LocationName,
+                ActiveFlag = request.ActiveFlag,
                 CreatedBy = request.CreatedBy,
                 CreatedOn = _dataTime.Now
             };

@@ -15,6 +15,7 @@ namespace TALMS.Application.TrainingRooms.Commands.Update
         public int SeatingCapacity { get; set; }
 
         public bool HasProjector { get; set; }
+        public bool ActiveFlag { get; set; }
 
         public string ModifiedBy { get; set; }
     }
@@ -41,6 +42,7 @@ namespace TALMS.Application.TrainingRooms.Commands.Update
             entity.RoomDescription = request.RoomDescription;
             entity.SeatingCapacity = request.SeatingCapacity;
             entity.HasProjector = request.HasProjector;
+            entity.ActiveFlag = request.ActiveFlag;
             entity.ModifiedBy = request.ModifiedBy;
             entity.ModifiedOn = _dateTimeService.Now;
             await _context.SaveChangesAsync(cancellationToken);

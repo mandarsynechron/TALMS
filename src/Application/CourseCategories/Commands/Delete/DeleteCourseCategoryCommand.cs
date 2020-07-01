@@ -5,28 +5,28 @@ using TALMS.Application.Common.Exceptions;
 using TALMS.Application.Common.Interfaces;
 using TALMS.Domain.Entities;
 
-namespace TALMS.Application.CourseCategories.Commands.Delete
+namespace TALMS.Application.CertificateCategories.Commands.Delete
 {
-    public class DeleteCourseCategoriesCommand : IRequest
+    public class DeleteCertificateCategoriesCommand : IRequest
     {
-        public int CourseCategoryId { get; set; }
+        public int CertificateCategoryId { get; set; }
     }
-    public class DeleteCourseCategoryCommandHandler : IRequestHandler<DeleteCourseCategoriesCommand>
+    public class DeleteCertificateCategoryCommandHandler : IRequestHandler<DeleteCertificateCategoriesCommand>
     {
         private readonly IApplicationDbContext _context;
 
-        public DeleteCourseCategoryCommandHandler(IApplicationDbContext context)
+        public DeleteCertificateCategoryCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteCourseCategoriesCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteCertificateCategoriesCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.CourseCategory.FindAsync(request.CourseCategoryId);
+            var entity = await _context.CertificateCategory.FindAsync(request.CertificateCategoryId);
             if(entity == null)
-                throw new NotFoundException(nameof(CertificateCategory), request.CourseCategoryId);            
+                throw new NotFoundException(nameof(CertificateCategory), request.CertificateCategoryId);            
             
-            _context.CourseCategory.Remove(entity);
+            _context.CertificateCategory.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }

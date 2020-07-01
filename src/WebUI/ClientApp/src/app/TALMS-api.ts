@@ -14,6 +14,233 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+export interface ICertificateCategoryClient {
+    get(): Observable<CertificateCategory[]>;
+    create(command: CreateCertificateCategoriesCommand): Observable<number>;
+    update(certificateCategoryId: number, command: UpdateCertificateCategoriesCommand): Observable<FileResponse>;
+    delete(certificateCategoryId: number): Observable<FileResponse>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CertificateCategoryClient implements ICertificateCategoryClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    get(): Observable<CertificateCategory[]> {
+        let url_ = this.baseUrl + "/api/CertificateCategory";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<CertificateCategory[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CertificateCategory[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<CertificateCategory[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CertificateCategory.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CertificateCategory[]>(<any>null);
+    }
+
+    create(command: CreateCertificateCategoriesCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/CertificateCategory";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<number>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<number>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<number>(<any>null);
+    }
+
+    update(certificateCategoryId: number, command: UpdateCertificateCategoriesCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/CertificateCategory/{CertificateCategoryId}";
+        if (certificateCategoryId === undefined || certificateCategoryId === null)
+            throw new Error("The parameter 'certificateCategoryId' must be defined.");
+        url_ = url_.replace("{CertificateCategoryId}", encodeURIComponent("" + certificateCategoryId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<FileResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileResponse>(<any>null);
+    }
+
+    delete(certificateCategoryId: number): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/CertificateCategory/{CertificateCategoryId}";
+        if (certificateCategoryId === undefined || certificateCategoryId === null)
+            throw new Error("The parameter 'certificateCategoryId' must be defined.");
+        url_ = url_.replace("{CertificateCategoryId}", encodeURIComponent("" + certificateCategoryId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<FileResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileResponse>(<any>null);
+    }
+}
+
 export interface ICourseCategoryClient {
     get(): Observable<CourseCategory[]>;
     create(command: CreateCourseCategoriesCommand): Observable<number>;
@@ -1203,6 +1430,135 @@ export interface IAuditableEntityWithActiveFlag {
     activeFlag?: boolean | undefined;
 }
 
+export class CertificateCategory extends AuditableEntityWithActiveFlag implements ICertificateCategory {
+    certificateCategoryId?: number;
+    certificateCategoryName?: string | undefined;
+
+    constructor(data?: ICertificateCategory) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.certificateCategoryId = _data["certificateCategoryId"];
+            this.certificateCategoryName = _data["certificateCategoryName"];
+        }
+    }
+
+    static fromJS(data: any): CertificateCategory {
+        data = typeof data === 'object' ? data : {};
+        let result = new CertificateCategory();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["certificateCategoryId"] = this.certificateCategoryId;
+        data["certificateCategoryName"] = this.certificateCategoryName;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface ICertificateCategory extends IAuditableEntityWithActiveFlag {
+    certificateCategoryId?: number;
+    certificateCategoryName?: string | undefined;
+}
+
+export class CreateCertificateCategoriesCommand implements ICreateCertificateCategoriesCommand {
+    certificateCategoryName?: string | undefined;
+    activeFlag?: boolean;
+    createdBy?: string | undefined;
+
+    constructor(data?: ICreateCertificateCategoriesCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.certificateCategoryName = _data["certificateCategoryName"];
+            this.activeFlag = _data["activeFlag"];
+            this.createdBy = _data["createdBy"];
+        }
+    }
+
+    static fromJS(data: any): CreateCertificateCategoriesCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCertificateCategoriesCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["certificateCategoryName"] = this.certificateCategoryName;
+        data["activeFlag"] = this.activeFlag;
+        data["createdBy"] = this.createdBy;
+        return data; 
+    }
+}
+
+export interface ICreateCertificateCategoriesCommand {
+    certificateCategoryName?: string | undefined;
+    activeFlag?: boolean;
+    createdBy?: string | undefined;
+}
+
+export class UpdateCertificateCategoriesCommand implements IUpdateCertificateCategoriesCommand {
+    certificateCategoryId?: number;
+    certificateCategoryName?: string | undefined;
+    activeFlag?: boolean;
+    modifiedBy?: string | undefined;
+
+    constructor(data?: IUpdateCertificateCategoriesCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.certificateCategoryId = _data["certificateCategoryId"];
+            this.certificateCategoryName = _data["certificateCategoryName"];
+            this.activeFlag = _data["activeFlag"];
+            this.modifiedBy = _data["modifiedBy"];
+        }
+    }
+
+    static fromJS(data: any): UpdateCertificateCategoriesCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCertificateCategoriesCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["certificateCategoryId"] = this.certificateCategoryId;
+        data["certificateCategoryName"] = this.certificateCategoryName;
+        data["activeFlag"] = this.activeFlag;
+        data["modifiedBy"] = this.modifiedBy;
+        return data; 
+    }
+}
+
+export interface IUpdateCertificateCategoriesCommand {
+    certificateCategoryId?: number;
+    certificateCategoryName?: string | undefined;
+    activeFlag?: boolean;
+    modifiedBy?: string | undefined;
+}
+
 export class CourseCategory extends AuditableEntityWithActiveFlag implements ICourseCategory {
     courseCategoryId?: number | undefined;
     courseCategoryName?: string | undefined;
@@ -1242,6 +1598,7 @@ export interface ICourseCategory extends IAuditableEntityWithActiveFlag {
 
 export class CreateCourseCategoriesCommand implements ICreateCourseCategoriesCommand {
     courseCategoryName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 
     constructor(data?: ICreateCourseCategoriesCommand) {
@@ -1256,6 +1613,7 @@ export class CreateCourseCategoriesCommand implements ICreateCourseCategoriesCom
     init(_data?: any) {
         if (_data) {
             this.courseCategoryName = _data["courseCategoryName"];
+            this.activeFlag = _data["activeFlag"];
             this.createdBy = _data["createdBy"];
         }
     }
@@ -1270,6 +1628,7 @@ export class CreateCourseCategoriesCommand implements ICreateCourseCategoriesCom
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["courseCategoryName"] = this.courseCategoryName;
+        data["activeFlag"] = this.activeFlag;
         data["createdBy"] = this.createdBy;
         return data; 
     }
@@ -1277,12 +1636,14 @@ export class CreateCourseCategoriesCommand implements ICreateCourseCategoriesCom
 
 export interface ICreateCourseCategoriesCommand {
     courseCategoryName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 }
 
 export class UpdateCourseCategoriesCommand implements IUpdateCourseCategoriesCommand {
     courseCategoryId?: number;
     courseCategoryName?: string | undefined;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 
     constructor(data?: IUpdateCourseCategoriesCommand) {
@@ -1298,6 +1659,7 @@ export class UpdateCourseCategoriesCommand implements IUpdateCourseCategoriesCom
         if (_data) {
             this.courseCategoryId = _data["courseCategoryId"];
             this.courseCategoryName = _data["courseCategoryName"];
+            this.activeFlag = _data["activeFlag"];
             this.modifiedBy = _data["modifiedBy"];
         }
     }
@@ -1313,6 +1675,7 @@ export class UpdateCourseCategoriesCommand implements IUpdateCourseCategoriesCom
         data = typeof data === 'object' ? data : {};
         data["courseCategoryId"] = this.courseCategoryId;
         data["courseCategoryName"] = this.courseCategoryName;
+        data["activeFlag"] = this.activeFlag;
         data["modifiedBy"] = this.modifiedBy;
         return data; 
     }
@@ -1321,6 +1684,7 @@ export class UpdateCourseCategoriesCommand implements IUpdateCourseCategoriesCom
 export interface IUpdateCourseCategoriesCommand {
     courseCategoryId?: number;
     courseCategoryName?: string | undefined;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 }
 
@@ -1363,6 +1727,7 @@ export interface IGroup extends IAuditableEntityWithActiveFlag {
 
 export class CreateGroupCommand implements ICreateGroupCommand {
     groupName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 
     constructor(data?: ICreateGroupCommand) {
@@ -1377,6 +1742,7 @@ export class CreateGroupCommand implements ICreateGroupCommand {
     init(_data?: any) {
         if (_data) {
             this.groupName = _data["groupName"];
+            this.activeFlag = _data["activeFlag"];
             this.createdBy = _data["createdBy"];
         }
     }
@@ -1391,6 +1757,7 @@ export class CreateGroupCommand implements ICreateGroupCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["groupName"] = this.groupName;
+        data["activeFlag"] = this.activeFlag;
         data["createdBy"] = this.createdBy;
         return data; 
     }
@@ -1398,6 +1765,7 @@ export class CreateGroupCommand implements ICreateGroupCommand {
 
 export interface ICreateGroupCommand {
     groupName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 }
 
@@ -1484,6 +1852,7 @@ export interface ILocation extends IAuditableEntityWithActiveFlag {
 
 export class CreateLocationCommand implements ICreateLocationCommand {
     locationName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 
     constructor(data?: ICreateLocationCommand) {
@@ -1498,6 +1867,7 @@ export class CreateLocationCommand implements ICreateLocationCommand {
     init(_data?: any) {
         if (_data) {
             this.locationName = _data["locationName"];
+            this.activeFlag = _data["activeFlag"];
             this.createdBy = _data["createdBy"];
         }
     }
@@ -1512,6 +1882,7 @@ export class CreateLocationCommand implements ICreateLocationCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["locationName"] = this.locationName;
+        data["activeFlag"] = this.activeFlag;
         data["createdBy"] = this.createdBy;
         return data; 
     }
@@ -1519,12 +1890,14 @@ export class CreateLocationCommand implements ICreateLocationCommand {
 
 export interface ICreateLocationCommand {
     locationName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 }
 
 export class UpdateLocationCommand implements IUpdateLocationCommand {
     locationId?: number;
     locationName?: string | undefined;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 
     constructor(data?: IUpdateLocationCommand) {
@@ -1540,6 +1913,7 @@ export class UpdateLocationCommand implements IUpdateLocationCommand {
         if (_data) {
             this.locationId = _data["locationId"];
             this.locationName = _data["locationName"];
+            this.activeFlag = _data["activeFlag"];
             this.modifiedBy = _data["modifiedBy"];
         }
     }
@@ -1555,6 +1929,7 @@ export class UpdateLocationCommand implements IUpdateLocationCommand {
         data = typeof data === 'object' ? data : {};
         data["locationId"] = this.locationId;
         data["locationName"] = this.locationName;
+        data["activeFlag"] = this.activeFlag;
         data["modifiedBy"] = this.modifiedBy;
         return data; 
     }
@@ -1563,6 +1938,7 @@ export class UpdateLocationCommand implements IUpdateLocationCommand {
 export interface IUpdateLocationCommand {
     locationId?: number;
     locationName?: string | undefined;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 }
 
@@ -1714,6 +2090,7 @@ export interface IFeedBackQuestion extends IAuditableEntity {
 
 export class CreateQuestionCommand implements ICreateQuestionCommand {
     questionsName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 
     constructor(data?: ICreateQuestionCommand) {
@@ -1728,6 +2105,7 @@ export class CreateQuestionCommand implements ICreateQuestionCommand {
     init(_data?: any) {
         if (_data) {
             this.questionsName = _data["questionsName"];
+            this.activeFlag = _data["activeFlag"];
             this.createdBy = _data["createdBy"];
         }
     }
@@ -1742,6 +2120,7 @@ export class CreateQuestionCommand implements ICreateQuestionCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["questionsName"] = this.questionsName;
+        data["activeFlag"] = this.activeFlag;
         data["createdBy"] = this.createdBy;
         return data; 
     }
@@ -1749,12 +2128,14 @@ export class CreateQuestionCommand implements ICreateQuestionCommand {
 
 export interface ICreateQuestionCommand {
     questionsName?: string | undefined;
+    activeFlag?: boolean;
     createdBy?: string | undefined;
 }
 
 export class UpdateQuestionCommand implements IUpdateQuestionCommand {
     questionsId?: number;
     questionsName?: string | undefined;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 
     constructor(data?: IUpdateQuestionCommand) {
@@ -1770,6 +2151,7 @@ export class UpdateQuestionCommand implements IUpdateQuestionCommand {
         if (_data) {
             this.questionsId = _data["questionsId"];
             this.questionsName = _data["questionsName"];
+            this.activeFlag = _data["activeFlag"];
             this.modifiedBy = _data["modifiedBy"];
         }
     }
@@ -1785,6 +2167,7 @@ export class UpdateQuestionCommand implements IUpdateQuestionCommand {
         data = typeof data === 'object' ? data : {};
         data["questionsId"] = this.questionsId;
         data["questionsName"] = this.questionsName;
+        data["activeFlag"] = this.activeFlag;
         data["modifiedBy"] = this.modifiedBy;
         return data; 
     }
@@ -1793,6 +2176,7 @@ export class UpdateQuestionCommand implements IUpdateQuestionCommand {
 export interface IUpdateQuestionCommand {
     questionsId?: number;
     questionsName?: string | undefined;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 }
 
@@ -1844,6 +2228,7 @@ export interface ITrainingRoom extends IAuditableEntityWithActiveFlag {
 export class CreateTrainingRoomsCommand implements ICreateTrainingRoomsCommand {
     roomDescription?: string | undefined;
     seatingCapacity?: number;
+    activeFlag?: boolean;
     hasProjector?: boolean;
     createdBy?: string | undefined;
 
@@ -1860,6 +2245,7 @@ export class CreateTrainingRoomsCommand implements ICreateTrainingRoomsCommand {
         if (_data) {
             this.roomDescription = _data["roomDescription"];
             this.seatingCapacity = _data["seatingCapacity"];
+            this.activeFlag = _data["activeFlag"];
             this.hasProjector = _data["hasProjector"];
             this.createdBy = _data["createdBy"];
         }
@@ -1876,6 +2262,7 @@ export class CreateTrainingRoomsCommand implements ICreateTrainingRoomsCommand {
         data = typeof data === 'object' ? data : {};
         data["roomDescription"] = this.roomDescription;
         data["seatingCapacity"] = this.seatingCapacity;
+        data["activeFlag"] = this.activeFlag;
         data["hasProjector"] = this.hasProjector;
         data["createdBy"] = this.createdBy;
         return data; 
@@ -1885,6 +2272,7 @@ export class CreateTrainingRoomsCommand implements ICreateTrainingRoomsCommand {
 export interface ICreateTrainingRoomsCommand {
     roomDescription?: string | undefined;
     seatingCapacity?: number;
+    activeFlag?: boolean;
     hasProjector?: boolean;
     createdBy?: string | undefined;
 }
@@ -1894,6 +2282,7 @@ export class UpdateTrainingRoomsCommand implements IUpdateTrainingRoomsCommand {
     roomDescription?: string | undefined;
     seatingCapacity?: number;
     hasProjector?: boolean;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 
     constructor(data?: IUpdateTrainingRoomsCommand) {
@@ -1911,6 +2300,7 @@ export class UpdateTrainingRoomsCommand implements IUpdateTrainingRoomsCommand {
             this.roomDescription = _data["roomDescription"];
             this.seatingCapacity = _data["seatingCapacity"];
             this.hasProjector = _data["hasProjector"];
+            this.activeFlag = _data["activeFlag"];
             this.modifiedBy = _data["modifiedBy"];
         }
     }
@@ -1928,6 +2318,7 @@ export class UpdateTrainingRoomsCommand implements IUpdateTrainingRoomsCommand {
         data["roomDescription"] = this.roomDescription;
         data["seatingCapacity"] = this.seatingCapacity;
         data["hasProjector"] = this.hasProjector;
+        data["activeFlag"] = this.activeFlag;
         data["modifiedBy"] = this.modifiedBy;
         return data; 
     }
@@ -1938,6 +2329,7 @@ export interface IUpdateTrainingRoomsCommand {
     roomDescription?: string | undefined;
     seatingCapacity?: number;
     hasProjector?: boolean;
+    activeFlag?: boolean;
     modifiedBy?: string | undefined;
 }
 

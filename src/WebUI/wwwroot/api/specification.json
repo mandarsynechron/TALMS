@@ -6,6 +6,136 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/CertificateCategory": {
+      "get": {
+        "tags": [
+          "CertificateCategory"
+        ],
+        "operationId": "CertificateCategory_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CertificateCategory"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CertificateCategory"
+        ],
+        "operationId": "CertificateCategory_Create",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCertificateCategoriesCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CertificateCategory/{CertificateCategoryId}": {
+      "put": {
+        "tags": [
+          "CertificateCategory"
+        ],
+        "operationId": "CertificateCategory_Update",
+        "parameters": [
+          {
+            "name": "CertificateCategoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCertificateCategoriesCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CertificateCategory"
+        ],
+        "operationId": "CertificateCategory_Delete",
+        "parameters": [
+          {
+            "name": "CertificateCategoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CourseCategory": {
       "get": {
         "tags": [
@@ -667,7 +797,7 @@
   },
   "components": {
     "schemas": {
-      "CourseCategory": {
+      "CertificateCategory": {
         "allOf": [
           {
             "$ref": "#/components/schemas/AuditableEntityWithActiveFlag"
@@ -676,12 +806,11 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "courseCategoryId": {
+              "certificateCategoryId": {
                 "type": "integer",
-                "format": "int32",
-                "nullable": true
+                "format": "int32"
               },
-              "courseCategoryName": {
+              "certificateCategoryName": {
                 "type": "string",
                 "nullable": true
               }
@@ -718,6 +847,66 @@
           }
         }
       },
+      "CreateCertificateCategoriesCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificateCategoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateCertificateCategoriesCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "certificateCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "certificateCategoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
+          },
+          "modifiedBy": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CourseCategory": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuditableEntityWithActiveFlag"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "courseCategoryId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "courseCategoryName": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
       "CreateCourseCategoriesCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -725,6 +914,9 @@
           "courseCategoryName": {
             "type": "string",
             "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
           },
           "createdBy": {
             "type": "string",
@@ -743,6 +935,9 @@
           "courseCategoryName": {
             "type": "string",
             "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
           },
           "modifiedBy": {
             "type": "string",
@@ -778,6 +973,9 @@
           "groupName": {
             "type": "string",
             "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
           },
           "createdBy": {
             "type": "string",
@@ -832,6 +1030,9 @@
             "type": "string",
             "nullable": true
           },
+          "activeFlag": {
+            "type": "boolean"
+          },
           "createdBy": {
             "type": "string",
             "nullable": true
@@ -849,6 +1050,9 @@
           "locationName": {
             "type": "string",
             "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
           },
           "modifiedBy": {
             "type": "string",
@@ -956,6 +1160,9 @@
             "type": "string",
             "nullable": true
           },
+          "activeFlag": {
+            "type": "boolean"
+          },
           "createdBy": {
             "type": "string",
             "nullable": true
@@ -973,6 +1180,9 @@
           "questionsName": {
             "type": "string",
             "nullable": true
+          },
+          "activeFlag": {
+            "type": "boolean"
           },
           "modifiedBy": {
             "type": "string",
@@ -1021,6 +1231,9 @@
             "type": "integer",
             "format": "int32"
           },
+          "activeFlag": {
+            "type": "boolean"
+          },
           "hasProjector": {
             "type": "boolean"
           },
@@ -1047,6 +1260,9 @@
             "format": "int32"
           },
           "hasProjector": {
+            "type": "boolean"
+          },
+          "activeFlag": {
             "type": "boolean"
           },
           "modifiedBy": {

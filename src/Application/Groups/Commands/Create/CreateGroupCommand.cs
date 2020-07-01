@@ -9,6 +9,7 @@ namespace TALMS.Application.Groups.Commands.Create
     public class CreateGroupCommand : IRequest<int>
     {
         public string GroupName {get; set;}
+        public bool ActiveFlag { get; set; }
         public string CreatedBy { get; set; }
     }
 
@@ -27,6 +28,7 @@ namespace TALMS.Application.Groups.Commands.Create
             var entity = new Group
             {
                 GroupName = request.GroupName,
+                ActiveFlag = request.ActiveFlag,
                 CreatedBy = request.CreatedBy,
                 CreatedOn = _dateTime.Now
             };            

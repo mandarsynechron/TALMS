@@ -10,6 +10,7 @@ namespace TALMS.Application.TrainingRooms.Commands.Create
     {
         public string RoomDescription {get; set;}
         public int SeatingCapacity { get; set; }
+        public bool ActiveFlag { get; set; }
         public bool HasProjector { get; set; }
         public string CreatedBy { get; set; }
     }
@@ -31,6 +32,7 @@ namespace TALMS.Application.TrainingRooms.Commands.Create
                 RoomDescription = request.RoomDescription,
                 SeatingCapacity = request.SeatingCapacity,
                 HasProjector = request.HasProjector,
+                ActiveFlag = request.ActiveFlag,
                 CreatedBy = request.CreatedBy,
                 CreatedOn = _dateTime.Now
             };            

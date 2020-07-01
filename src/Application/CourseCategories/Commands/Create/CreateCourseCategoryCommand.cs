@@ -9,6 +9,7 @@ namespace TALMS.Application.CourseCategories.Commands.Create
     public class CreateCourseCategoriesCommand : IRequest<int>
     {
         public string CourseCategoryName { get; set; }
+        public bool ActiveFlag { get; set; }
         public string CreatedBy { get; set; }
     }
     public class CreateCourseCategoryCommandHandler : IRequestHandler<CreateCourseCategoriesCommand, int>
@@ -26,6 +27,7 @@ namespace TALMS.Application.CourseCategories.Commands.Create
             var entity = new CourseCategory
             {
                 CourseCategoryName = request.CourseCategoryName,
+                ActiveFlag = request.ActiveFlag,
                 CreatedBy = request.CreatedBy,
                 CreatedOn = _dateTime.Now
             };

@@ -9,6 +9,7 @@ namespace TALMS.Application.Question.Commands.Create
     public class CreateQuestionCommand : IRequest<int>
     {
         public string QuestionsName { get; set; }
+        public bool ActiveFlag { get; set; }
         public string CreatedBy { get; set; }
     }
     public class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, int>
@@ -26,6 +27,7 @@ namespace TALMS.Application.Question.Commands.Create
             var entity = new Questions
             {
                 QuestionsName = request.QuestionsName,
+                ActiveFlag = request.ActiveFlag,
                 CreatedBy = request.CreatedBy,
                 CreatedOn = _dateTime.Now
             };
