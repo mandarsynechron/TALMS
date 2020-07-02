@@ -15,7 +15,7 @@ using TALMS.Infrastructure.Persistence;
 using TALMS.WebUI.Filters;
 using TALMS.WebUI.Services;
 
-[assembly: ApiConventionType(typeof(DefaultApiConventions))]
+// [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace TALMS.WebUI
 {
     public class Startup
