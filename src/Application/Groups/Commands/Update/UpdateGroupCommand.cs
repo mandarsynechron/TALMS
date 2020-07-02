@@ -10,6 +10,7 @@ namespace TALMS.Application.Groups.Commands.Update
     public class UpdateGroupCommand : IRequest
     {
         public int GroupId { get; set; }
+        public bool ActiveFlag { get; set; }
         public string GroupName { get; set; }
         public string ModifiedBy { get; set; }
     }
@@ -34,6 +35,7 @@ namespace TALMS.Application.Groups.Commands.Update
                 throw new NotFoundException(nameof(Group), request.GroupId);
             
             entity.GroupName = request.GroupName;
+            entity.ActiveFlag = request.ActiveFlag;
             entity.ModifiedBy = request.ModifiedBy;
             entity.ModifiedOn = _dateTimeService.Now;
             await _context.SaveChangesAsync(cancellationToken);

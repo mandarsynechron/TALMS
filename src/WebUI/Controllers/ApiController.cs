@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace TALMS.WebUI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")]    
     public abstract class ApiController : ControllerBase
     {
         private IMediator _mediator;
